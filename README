@@ -1,0 +1,31 @@
+0. make a jar out of the 2 Java files
+
+1. throw the jar into ringos lib folder
+
+2. add this to your action.js:
+
+exports.captcha = function(req) {
+   importClass(Packages.com.funqtional.util.Captcha);
+   var cap = new Captcha();
+   var resp = {'img':capt.make()};
+   req.session.data.captcha = cap.phrase();
+   return Response.json(resp);
+}
+
+3. add this to your page the JQuery way (as a macro, or any other way ...). The page
+contains a <div id='captcha'></div>:
+
+<script type="text/javascript">
+   $(function() {
+       $.post('captcha', function(data) {
+           imageData = data.img;
+           var img = $('<img>')
+                   .attr('src', 'data:image/jpeg;base64,' +
+imageData)
+           $('#captcha').append(img);
+       });
+   });
+</script>
+
+In the validation code you would then compare the captcha String from
+req.postParams with the one stored in req.session.data.captcha.
